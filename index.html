@@ -1,110 +1,82 @@
-<script setup>
-import { ref, computed } from 'vue'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue Currency Converter</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .converter {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    select, input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="converter">
+    <h2>Currency Converter</h2>
+    
+    <label>Amount:</label>
+    <input type="number" v-model.number="amount" min="0">
 
-// --- Reactive State ---
-const amount = ref(1) // Default amount
-const fromCurrency = ref('USD') // Default from currency
-const toCurrency = ref('EUR') // Default to currency
+    <label>From:</label>
+    <select v-model="fromCurrency">
+      <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+    </select>
 
-// --- Static Data ---
-// NOTE: These are SAMPLE rates for demonstration purposes only.
-// In a real app, you would fetch these from an API.
-const exchangeRates = ref({
-  USD: 1.0,   // Base Currency
-  EUR: 0.92,  // 1 USD = 0.92 EUR
-  GBP: 0.79,  // 1 USD = 0.79 GBP
-  JPY: 150.5 // 1 USD = 150.5 JPY
-  // Add more currencies and rates as needed
-})
+    <label>To:</label>
+    <select v-model="toCurrency">
+      <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+    </select>
 
-const currencies = computed(() => Object.keys(exchangeRates.value))
-
-// --- Computed Property for Conversion ---
-const convertedAmount = computed(() => {
-  const inputAmount = parseFloat(amount.value)
-  if (isNaN(inputAmount) || inputAmount <= 0) {
-    return 0 // Return 0 if input is invalid or non-positive
-  }
-
-  const baseRate = exchangeRates.value[fromCurrency.value]
-  const targetRate = exchangeRates.value[toCurrency.value]
-
-  // Check if rates exist
-  if (!baseRate || !targetRate) {
-    console.error("Exchange rate not found for selected currency.")
-    return 'Error' // Or handle appropriately
-  }
-
-  // Convert 'from' currency amount to base currency (USD)
-  const amountInBase = inputAmount / baseRate
-
-  // Convert base currency amount to 'to' currency
-  const finalAmount = amountInBase * targetRate
-
-  return finalAmount.toFixed(2) // Format to 2 decimal places
-})
-
-</script>
-
-<template>
-  <div>
-    <h1>Simple Currency Converter</h1>
-
-    <div>
-      <label for="amount">Amount:</label>
-      <input type="number" id="amount" v-model.number="amount" min="0" step="any">
+    <div class="result">
+      {{ convertedAmount }} {{ toCurrency }}
     </div>
-
-    <div>
-      <label for="fromCurrency">From:</label>
-      <select id="fromCurrency" v-model="fromCurrency">
-        <option v-for="currency in currencies" :key="currency" :value="currency">
-          {{ currency }}
-        </option>
-      </select>
-    </div>
-
-    <div>
-      <label for="toCurrency">To:</label>
-      <select id="toCurrency" v-model="toCurrency">
-        <option v-for="currency in currencies" :key="currency" :value="currency">
-          {{ currency }}
-        </option>
-      </select>
-    </div>
-
-    <div>
-      <h2>Converted Amount:</h2>
-      <p>
-        {{ amount }} {{ fromCurrency }} = <strong>{{ convertedAmount }} {{ toCurrency }}</strong>
-      </p>
-    </div>
-
-    <p style="font-size: 0.8em; color: grey;">
-      Note: Uses sample exchange rates for demonstration.
-    </p>
   </div>
-</template>
 
-<style scoped>
-/* Basic Styling (optional, can be removed if using CSS framework later) */
-div {
-  margin-bottom: 10px;
-  font-family: sans-serif;
-}
-label {
-  margin-right: 5px;
-  display: inline-block;
-  width: 60px;
-}
-input, select {
-  padding: 5px;
-  margin-left: 10px;
-}
-h1, h2 {
-    text-align: center;
-}
-p strong {
-  font-size: 1.2em;
-}
-</style>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          amount: 1,
+          fromCurrency: 'USD',
+          toCurrency: 'EUR',
+          currencies: ['USD', 'EUR', 'JPY', 'PHP'],
+          exchangeRates: {
+            USD: { USD: 1, EUR: 0.92, JPY: 154.25, PHP: 57.2 },
+            EUR: { USD: 1.09, EUR: 1, JPY: 167.42, PHP: 62.2 },
+            JPY: { USD: 0.0065, EUR: 0.0060, JPY: 1, PHP: 0.37 },
+            PHP: { USD: 0.017, EUR: 0.016, JPY: 2.69, PHP: 1 },
+          }
+        };
+      },
+      computed: {
+        convertedAmount() {
+          const rate = this.exchangeRates[this.fromCurrency][this.toCurrency];
+          return (this.amount * rate).toFixed(2);
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
