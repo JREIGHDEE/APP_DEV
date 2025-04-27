@@ -4,51 +4,56 @@
   <meta charset="UTF-8">
   <title>Vue Currency Converter</title>
   <script src="https://unpkg.com/vue@3"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .converter {
-      max-width: 400px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    select, input {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      font-size: 16px;
-    }
-    .result {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div id="app" class="converter">
-    <h2>Currency Converter</h2>
-    
-    <label>Amount:</label>
-    <input type="number" v-model.number="amount" min="0">
+<body class="bg-gray-100 font-sans antialiased flex items-center justify-center min-h-screen">
 
-    <label>From:</label>
-    <select v-model="fromCurrency">
-      <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
-    </select>
+  <div id="app" class="converter bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">Currency Converter</h2>
 
-    <label>To:</label>
-    <select v-model="toCurrency">
-      <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
-    </select>
+    <div class="space-y-4"> 
+      <div>
+        <label for="amount" class="block text-sm font-medium text-gray-600 mb-1">Amount:</label>
+        <input
+          id="amount"
+          type="number"
+          v-model.number="amount"
+          min="0"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+          placeholder="Enter amount"
+        >
+      </div>
 
-    <div class="result">
-      {{ convertedAmount }} {{ toCurrency }}
+      <div>
+        <label for="fromCurrency" class="block text-sm font-medium text-gray-600 mb-1">From:</label>
+        <select
+          id="fromCurrency"
+          v-model="fromCurrency"
+          class="w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+        >
+          <option v-for="currency in currencies" :key="currency" :value="currency">{{ currency }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="toCurrency" class="block text-sm font-medium text-gray-600 mb-1">To:</label>
+        <select
+          id="toCurrency"
+          v-model="toCurrency"
+          class="w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+        >
+          <option v-for="currency in currencies" :key="currency" :value="currency">{{ currency }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result mt-8 p-4 bg-indigo-50 rounded-md text-center">
+      <span class="text-xl font-semibold text-indigo-700">
+        {{ convertedAmount }}
+      </span>
+      <span class="text-lg text-indigo-600 ml-1">
+        {{ toCurrency }}
+      </span>
     </div>
   </div>
 
@@ -61,21 +66,37 @@
           amount: 1,
           fromCurrency: 'USD',
           toCurrency: 'EUR',
-          currencies: ['USD', 'EUR', 'JPY', 'PHP'],
+          currencies: ['USD', 'EUR', 'JPY', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'PHP'],
           exchangeRates: {
-            USD: { USD: 1, EUR: 0.92, JPY: 154.25, PHP: 57.2 },
-            EUR: { USD: 1.09, EUR: 1, JPY: 167.42, PHP: 62.2 },
-            JPY: { USD: 0.0065, EUR: 0.0060, JPY: 1, PHP: 0.37 },
-            PHP: { USD: 0.017, EUR: 0.016, JPY: 2.69, PHP: 1 },
+            USD: { USD: 1, EUR: 0.92, JPY: 154.25, PHP: 57.20, GBP: 0.79, AUD: 1.50, CAD: 1.36, CHF: 0.90, CNY: 7.22 },
+            EUR: { USD: 1.09, EUR: 1, JPY: 167.42, PHP: 62.20, GBP: 0.86, AUD: 1.63, CAD: 1.48, CHF: 0.98, CNY: 7.85 },
+            JPY: { USD: 0.0065, EUR: 0.0060, JPY: 1, PHP: 0.37, GBP: 0.0051, AUD: 0.0097, CAD: 0.0088, CHF: 0.0058, CNY: 0.047 },
+            PHP: { USD: 0.017, EUR: 0.016, JPY: 2.69, PHP: 1, GBP: 0.014, AUD: 0.026, CAD: 0.024, CHF: 0.016, CNY: 0.13 },
+            GBP: { USD: 1.27, EUR: 1.16, JPY: 195.30, PHP: 72.45, GBP: 1, AUD: 1.90, CAD: 1.72, CHF: 1.14, CNY: 9.15 },
+            AUD: { USD: 0.67, EUR: 0.61, JPY: 102.80, PHP: 38.15, GBP: 0.53, AUD: 1, CAD: 0.91, CHF: 0.60, CNY: 4.82 },
+            CAD: { USD: 0.74, EUR: 0.68, JPY: 113.25, PHP: 41.95, GBP: 0.58, AUD: 1.10, CAD: 1, CHF: 0.66, CNY: 5.31 },
+            CHF: { USD: 1.11, EUR: 1.02, JPY: 171.50, PHP: 63.55, GBP: 0.88, AUD: 1.66, CAD: 1.51, CHF: 1, CNY: 8.02 },
+            CNY: { USD: 0.14, EUR: 0.13, JPY: 21.38, PHP: 7.92, GBP: 0.11, AUD: 0.21, CAD: 0.19, CHF: 0.12, CNY: 1 }
           }
         };
       },
       computed: {
         convertedAmount() {
+          if (
+            !this.amount ||
+            isNaN(this.amount) ||
+            !this.exchangeRates[this.fromCurrency] ||
+            !this.exchangeRates[this.fromCurrency][this.toCurrency]
+          ) {
+            return '0.00'; 
+          }
           const rate = this.exchangeRates[this.fromCurrency][this.toCurrency];
-          return (this.amount * rate).toFixed(2);
+          const result = this.amount * rate;
+
+          return result.toFixed(2);
         }
-      }
+      },
+
     }).mount('#app');
   </script>
 </body>
